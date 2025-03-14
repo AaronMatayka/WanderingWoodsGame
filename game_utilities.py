@@ -4,8 +4,7 @@
 # Main Utility File for holding shared functions such as
 # generating the grid, moving players, checking meet conditions, displaying statistics, etc
 
-from player import *
-from time import *
+from player_objects import *
 
 class Cell:
     """Represents a single cell in the grid that can hold multiple integer values."""
@@ -147,59 +146,3 @@ def place_players(grid, player_count = 2, positions = None):
 #         player_positions.add(player.position)
 #     print("No collision detected!")
 #     return False #No collision
-
-
-# Testing code
-test_grid = make_grid(5, 3)
-print_grid(test_grid)
-
-players_list = place_players(test_grid, 3)
-print_grid(test_grid)
-
-# Run a loop to move the player randomly multiple times
-# for _ in range(25):  # Move 10 times
-#     if players:
-#         players[0].move("random", test_grid)
-#         players[1].move("random", test_grid)
-#     print_grid(test_grid)
-#
-#     if check_collision(players):
-#         print("Players have met! Stopping simulation.")
-#         break
-#     time.sleep(0.5)  # Pause for half a second to visualize changes
-
-if players_list:
-    print("Test")
-    # Move Player 1 (number 1) around the grid
-    players_list.get_player(1).move("right", test_grid)
-    print_grid(test_grid)
-
-    players_list.get_player(1).move("right", test_grid)
-    print_grid(test_grid)
-
-    players_list.get_player(1).move("down", test_grid)
-    print_grid(test_grid)
-
-    # Move Player 2 (number 2) around the grid
-    players_list.get_player(2).move("left", test_grid)
-    print_grid(test_grid)
-
-    players_list.get_player(2).move("left", test_grid)
-    print_grid(test_grid)
-
-    players_list.get_player(2).move("up", test_grid)
-    print_grid(test_grid)
-
-# TODO: move test code at bottom to main
-# TODO: Make 3 different py files, one for each scenario we have to implement: K-2, 3-5, and 6-8
-# TODO: For each scenario, music needs to play during gameplay.
-# TODO: For each scenario, when all players are in a group display a graphic and statistics from wandering, and announe them audibly. Game resets.
-# TODO: For K-2, implement 2 people in opposite corners, who wander randomly. Count each move for each person. Basically the default scenario for functions.
-# TODO: For 3-5, grid size can be set manually, which can now be rectangular. 2, 3 or 4 people, can be placed anywhere. Can play and replay multiple times, and display stats like longest run, shortest, average etc.
-# TODO: For 6-8, Students are meant to run experiments to find how average runs vary with different sizes and shapes of grids, will need run-to-run tracking like 3-5. Also need different wandering protocols to use besides random.
-# TODO: Change the appearance of two collided players to better represent they are both there, currently just 1 or 2 appears.
-# TODO: Implement main to run in a loop for testing multiple times and multiple levels of complexity, needs to run until user ends it.
-# TODO: Design document: Needs both specifications and software design, sample document is posted. Can be combined with user's guide.
-# TODO: User's guide, simple instructions to tell users how to install and use the program.
-# TODO: Finished code needs to be in exe file or binary, click to execute.
-# TODO: Demo of code, given 20 minutes to demo our code.
