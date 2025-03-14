@@ -149,12 +149,12 @@ def place_players(grid, player_count = 2, positions = None):
     return players_object
 
 #Function used to check if two players are on the same spot, and if so print this and return true.
-# def check_collision(player):
-#     player_positions = set()
-#     for player in players:
-#         if player.position in player_positions:
-#             print("Collision detected!")
-#             return True #Collision detected
-#         player_positions.add(player.position)
-#     print("No collision detected!")
-#     return False #No collision
+def check_collision(players_object):
+    player_positions = set()
+    for player in players_object.get_players():
+        if player.position in player_positions:
+            print("Collision detected!")
+            return True #Collision detected
+        player_positions.add(player.position)
+    print("No collision detected!")
+    return False #No collision
