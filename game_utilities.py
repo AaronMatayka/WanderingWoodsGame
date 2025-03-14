@@ -21,9 +21,8 @@ from player_objects import *
 class Cell:
     """Represents a single cell in the grid that can hold multiple integer values."""
     def __init__(self, *values):
-        for value in values:
-            if any(type(value) is not int):
-                raise ValueError("All values must be integers.")
+        if any(type(value) is not int for value in values):
+            raise ValueError("All values must be integers.")
 
         self.values = list(values)
         self.add_value(0)

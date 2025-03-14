@@ -107,8 +107,8 @@ class Player:
         delta_y, delta_x = move_actions.get(direction, (0, 0))
 
         # Calculate the new position by adding delta to the current position
-        new_y = str(int(self.position[0]) + delta_y)
-        new_x = str(int(self.position[1]) + delta_x)
+        new_y = int(self.position[0]) + delta_y
+        new_x = int(self.position[1]) + delta_x
 
         # Ensure the move is within the grid's bounds
         if 0 <= int(new_y) < len(grid) and 0 <= int(new_x) < len(grid[0]):
