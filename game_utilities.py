@@ -1,8 +1,20 @@
-# Aaron Matayka
-# Andrew Matayka
-# 03/13/25
-# Main Utility File for holding shared functions such as
-# generating the grid, moving players, checking meet conditions, displaying statistics, etc
+# -----------------------------------------------------------------------------
+# Authors: Andrew Matayka & Aaron Matayka
+# Emails: mataykaandrew@gmail.com & aaronjmatayka@gmail.com
+# Class: Software Engineering
+# Date: 2025-03-14
+#
+# File Name: game_utilities.py
+# External Files: player_objects.py
+# Imports Used:
+#   - None
+#
+# Description:
+#   This file defines the `Cell` class and several utility functions for managing
+#   the game grid. The `Cell` class represents a single grid cell that can hold
+#   multiple integer values (such as player numbers). The utility functions
+#   create a grid, print it, and place players on it.
+# -----------------------------------------------------------------------------
 
 from player_objects import *
 

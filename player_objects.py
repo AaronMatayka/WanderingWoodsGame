@@ -1,3 +1,22 @@
+# -----------------------------------------------------------------------------
+# Authors: Andrew Matayka & Aaron Matayka
+# Emails: mataykaandrew@gmail.com & aaronjmatayka@gmail.com
+# Class: Software Engineering
+# Date: 2025-03-14
+#
+# File Name: player_objects.py
+# External Files: None
+# Imports Used:
+#   - random (for random player movements)
+#
+# Description:
+#   This file defines the `Players` and `Player` classes. The `Players` class manages
+#   all players in the game, allowing players to be added, retrieved by their number,
+#   and iterated over. The `Player` class represents an individual player, with
+#   functionality for moving the player in different directions on the grid,
+#   updating the grid accordingly.
+# -----------------------------------------------------------------------------
+
 import random
 
 class Players:
