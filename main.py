@@ -1,4 +1,3 @@
-# -----------------------------------------------------------------------------
 # Authors: Andrew Matayka & Aaron Matayka
 # Emails: mataykaandrew@gmail.com & aaronjmatayka@gmail.com
 # Class: Software Engineering
@@ -11,11 +10,11 @@
 #   - time (for timing between moves)
 #
 # Description:
-#   This file contains the `Main` class that runs the grid-based game. It sets
+#   This file contains the Main class that runs the grid-based game. It sets
 #   up the grid, places players, and handles their movement. The game simulates
 #   player actions on the grid and prints the grid state after each move.
 # -----------------------------------------------------------------------------
-
+from basic_simulation import BasicSimulation
 from game_utilities import *
 from player_objects import *
 
@@ -79,3 +78,5 @@ class Main:
 if __name__ == "__main__":
     main_program = Main()
     main_program.run()
+
+    BasicSimulation().run_simulation()
