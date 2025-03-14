@@ -1,4 +1,4 @@
-from game_utilities import make_grid, print_grid, place_players, check_collision
+from game_utilities import *
 import time
 import random
 
