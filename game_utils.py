@@ -4,30 +4,8 @@
 # Main Utility File for holding shared functions such as
 # generating the grid, moving players, checking meet conditions, displaying statistics, etc
 
-import random
-
-class Player:
-    def __init__(self, number, position):
-        self.number = number
-        self.position = position
-
-    def move(self, direction, grid):
-        move_actions = {
-            "up": (-1, 0),
-            "down": (1, 0),
-            "left": (0, -1),
-            "right": (0, 1),
-        }
-
-        delta_y, delta_x = move_actions.get(direction, (0, 0))
-        new_y = self.position[0] + delta_y
-        new_x = self.position[1] + delta_x
-
-        # Ensure the move is within grid bounds
-        if 0 <= new_y < len(grid) and 0 <= new_x < len(grid[0]):
-            grid[self.position[0]][self.position[1]] = 0  # Clear old position
-            self.position = (new_y, new_x)
-            grid[new_y][new_x] = self.number  # Place player in new position
+from player import Player
+import time
 
 # Simple function to make a grid based on the x_size and y_size,
 # and if not declared makes a 2x2 grid
@@ -79,6 +57,9 @@ print_grid(test_grid)
 players = place_players(test_grid)
 print_grid(test_grid)
 
-if players:
-    players[0].move("right", test_grid)
-print_grid(test_grid)
+# Run a loop to move the player randomly multiple times
+for _ in range(25):  # Move 10 times
+    if players:
+        players[0].move("random", test_grid)
+    print_grid(test_grid)
+    time.sleep(0.5)  # Pause for half a second to visualize changes
