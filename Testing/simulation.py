@@ -16,7 +16,7 @@ def settings_menu(mainmenu, settings):
 
 def start_the_game(mainmenu, submenu):
     if universal_variables.GRADE_LEVEL == 1:
-        simulation_chooser()
+        simulation_chooser(mainmenu)
     elif universal_variables.GRADE_LEVEL == 2 or universal_variables.GRADE_LEVEL == 3:
         mainmenu._open(submenu)
 
@@ -24,40 +24,65 @@ def start_the_game(mainmenu, submenu):
 def final_menu(mainmenu, finalmenu):
     mainmenu._open(finalmenu)
 
-
 def generate_player_position_inputs(submenu, player_count):
     # Remove any existing player position input boxes
     for widget in submenu.get_widgets():
         submenu.remove_widget(widget)
 
+    # Create a parent frame to hold columns
+    parent_frame = submenu.add.frame_h(220 * 2 + 80, universal_variables.PLAYER_COUNT * 49 + 20)
+
+    # Create two vertical frames for each text input
+    frame1 = submenu.add.frame_v(220 + 20, universal_variables.PLAYER_COUNT * 49 + 10)
+    frame2 = submenu.add.frame_v(220 + 20, universal_variables.PLAYER_COUNT * 49 + 10)
+
     # Create new input boxes for each player position
     for i in range(1, player_count + 1):
-        submenu.add.text_input(f'Player {i} X Position: ', default='0', maxchar=3)
-        submenu.add.text_input(f'Player {i} Y Position: ', default='0', maxchar=3)
+        input1 = submenu.add.text_input(f'Player {i} X: ', default='0', maxchar=3)
+        frame1.pack(input1)
+        input2 = submenu.add.text_input(f'Player {i} Y: ', default='0', maxchar=3)
+        frame2.pack(input2)
 
+    parent_frame.pack(frame1)
+    parent_frame.pack(frame2)
 
-def simulation_chooser():
+def simulation_chooser(finalmenu):
     from Testing.game_base import Game
     test = Game(universal_variables.GRID_WIDTH, universal_variables.GRID_HEIGHT, universal_variables.PLAYER_COUNT)
 
     if universal_variables.GRADE_LEVEL == 1:
-        test.people.append(Person(0, 0, universal_variables.PLAYER_COLORS[0]))
+        test.people.append(Person(0, 0, universal_variables.PLAYER_COLORS[0], 1))
         test.people.append(Person(universal_variables.GRID_WIDTH - 1, universal_variables.GRID_HEIGHT - 1,
-                                  universal_variables.PLAYER_COLORS[1]))
+                                  universal_variables.PLAYER_COLORS[1], 2))
     elif universal_variables.GRADE_LEVEL == 2 or universal_variables.GRADE_LEVEL == 3:
         for i in range(universal_variables.PLAYER_COUNT):
             # Use modulo to loop through PLAYER_COLORS in case PLAYER_COUNT exceeds the number of colors available
             color = universal_variables.PLAYER_COLORS[i % len(universal_variables.PLAYER_COLORS)]
 
             test.people.append(Person(i * (universal_variables.GRID_WIDTH // universal_variables.PLAYER_COUNT),
-                                      i * (universal_variables.GRID_HEIGHT // universal_variables.PLAYER_COUNT), color))
+                                      i * (universal_variables.GRID_HEIGHT // universal_variables.PLAYER_COUNT), color, i + 1))
     else:
         print("Invalid Grade Level: " + str(universal_variables.GRADE_LEVEL))
 
-    test.game_loop()
+    for widget in finalmenu.get_widgets():
+        if isinstance(widget, pygame_menu.widgets.TextInput):
+            value = widget.get_value()
+            x, y = -1, -1
+            if 'X' in widget.get_title():
+                x = int(value)
+            elif 'Y' in widget.get_title():
+                y = int(value)
 
-def grade_level_changed(self, grade_selector):
-    universal_variables.GRADE_LEVEL = grade_selector
+            player_number = ''.join(c for c in widget.get_title() if c.isdigit())
+
+            for person in test.people:
+                if person.player_number == int(player_number):
+                    if x != -1:
+                        person.x = x
+                    elif y != -1:
+                        person.y = y
+
+    test.game_loop()
 
 # Make sure the input only allows numeric input
 def filter_input(text):
@@ -85,8 +110,8 @@ def main_menu():
     # SETTINGS MENU
     settings = pygame_menu.Menu('Settings', universal_variables.WINDOW_WIDTH, universal_variables.WINDOW_HEIGHT,
                                 theme=themes.THEME_GREEN)
-    settings.add.selector('Grade Level :', [('K-2', 1), ('3-5', 2), ('6-8', 3)],
-                          default=universal_variables.GRADE_LEVEL - 1, onchange=grade_level_changed)
+    grade_selector = settings.add.selector('Grade Level :', [('K-2', 1), ('3-5', 2), ('6-8', 3)],
+                          default=universal_variables.GRADE_LEVEL - 1)
     time_selector = settings.add.text_input('Simulation Turn Time: ', default=str(universal_variables.TURN_TIME))
     cell_size_selector = settings.add.text_input('Cell Size: ', default=str(universal_variables.CELL_SIZE))
 
@@ -96,6 +121,8 @@ def main_menu():
     grid_width_input = submenu.add.text_input('Grid Width: ', default='5', maxchar=2)
     grid_height_input = submenu.add.text_input('Grid Height: ', default='5', maxchar=2)
     player_count_input = submenu.add.text_input('Player Count: ', default='3', maxchar=2)
+    wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('Testing', 2)], default=0)
+    wandering_choice.hide()
     submenu.add.button('Continue', lambda: final_menu_handler())
 
     # STATS MENU
@@ -129,10 +156,11 @@ def main_menu():
 
         final_menu(mainmenu, finalmenu)
 
-        start_game_button = finalmenu.add.button('Start Game', lambda: simulation_chooser())
+        start_game_button = finalmenu.add.button('Start Game', lambda: simulation_chooser(finalmenu))
 
         start_game_button.set_col_row_index(0, universal_variables.PLAYER_COUNT * 2,
                                             universal_variables.PLAYER_COUNT * 2)
+
 
     def return_to_main_menu(menu):
         universal_variables.RUN_COMPLETE = False
@@ -141,8 +169,14 @@ def main_menu():
     while True:
         events = pygame.event.get()
         for event in events:
+            universal_variables.GRADE_LEVEL = grade_selector.get_value()[1] + 1
             universal_variables.TURN_TIME = filter_input(time_selector.get_value())
             universal_variables.CELL_SIZE = filter_input(cell_size_selector.get_value())
+
+            if universal_variables.GRADE_LEVEL == 3:
+                wandering_choice.show()
+            else:
+                wandering_choice.hide()
 
             if event.type == pygame.QUIT:
                 exit()
