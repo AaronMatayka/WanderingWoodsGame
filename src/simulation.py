@@ -158,7 +158,7 @@ def main_menu():
 
     time_selector.set_onchange(
         partial(utilities.limit_input_value, input_field=time_selector, min=0, max=10))
-    time_selector.set_onchange(
+    cell_size_selector.set_onchange(
         partial(utilities.limit_input_value, input_field=cell_size_selector, min=10, max=100))
 
     # PARAMETER MENU

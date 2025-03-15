@@ -26,6 +26,7 @@ def limit_input_value(value, input_field, min, max):
         return
     elif value.isdigit():
         value = int(value)
+        print(input_field.get_title())
         if value < min:
             input_field.set_value(str(min))
         elif value > max:
