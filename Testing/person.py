@@ -9,11 +9,12 @@ pygame.init()
 
 
 class Person:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, color, player_number):
         self.x = x
         self.y = y
         self.color = color
         self.move_count = 0
+        self.player_number = player_number
         self.group = [self]  # A list to store group members, initially just the person
 
     def move(self, grid_width, grid_height):
