@@ -14,8 +14,6 @@
 #   up the grid, places players, and handles their movement. The game simulates
 #   player actions on the grid and prints the grid state after each move.
 # -----------------------------------------------------------------------------
-from intermediate_simulation import IntermediateSimulation
-from basic_simulation import BasicSimulation
 from game_utilities import *
 from player_objects import *
 
@@ -80,5 +78,5 @@ if __name__ == "__main__":
     main_program = Main()
     main_program.run()
 
-    BasicSimulation().run_simulation()
+    # BasicSimulation().run_simulation()
     #IntermediateSimulation().run_simulation()

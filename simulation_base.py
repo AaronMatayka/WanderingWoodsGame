@@ -13,8 +13,10 @@
 #   This file defines the basic functions used in all simulation classes to implement the simulations, such as run_simulation, reset_game, etc.
 # -----------------------------------------------------------------------------
 import time
-import winsound
+
+# import winsound
 from game_utilities import *
+
 
 class SimulationBase:
     """Base class for running a grid-based simulation."""
@@ -38,16 +40,16 @@ class SimulationBase:
         self.move_counts = {player.number: 0 for player in self.players.get_players()}
 
         #Checks for music file, and runs audio if present TODO: Fix to work without music file
-        if music_file:
-            self.play_background_music(music_file)
+        # if music_file:
+        # self.play_background_music(music_file)
 
     def play_background_music(self, music_file):
         """Plays background music while the simulation is running."""
-        winsound.PlaySound(music_file, winsound.SND_FILENAME | winsound.SND_LOOP | winsound.SND_ASYNC)
+        #winsound.PlaySound(music_file, winsound.SND_FILENAME | winsound.SND_LOOP | winsound.SND_ASYNC)
 
     def stop_background_music(self):
         """Stops the background music."""
-        winsound.PlaySound(None, winsound.SND_PURGE)
+        #winsound.PlaySound(None, winsound.SND_PURGE)
 
 
     def place_players(self):
