@@ -147,6 +147,48 @@ def place_players(grid, player_count = 2, positions = None):
 
     return players_object
 
+
+def place_players_with_input(grid, player_count=2):
+    """
+    Places players on the grid based on user input for positions.
+
+    Parameters:
+    grid (list of list of Cell objects): The grid where players will be placed.
+    player_count (int): The number of players to place on the grid.
+
+    Returns:
+    list: A list of Player objects representing the players placed on the grid.
+    """
+    x_size = len(grid[0])
+    y_size = len(grid)
+    players_object = Players()
+
+    positions = []
+    print(f"Please enter positions for {player_count} players:")
+
+    for i in range(player_count):
+        valid_position = False
+        while not valid_position:
+            try:
+                y, x = map(int, input(f"Enter position for Player {i + 1} (row, column): ").split(","))
+                if 0 <= y < y_size and 0 <= x < x_size:
+                    positions.append((y, x))
+                    valid_position = True
+                else:
+                    print(f"Invalid position. Please enter a position within the grid dimensions: 0 <= row < {y_size}, 0 <= column < {x_size}")
+            except ValueError:
+                print("Invalid input. Please enter two integers separated by a comma.")
+
+    # Place players at specified positions
+    for i in range(player_count):
+        y, x = positions[i]
+        player = Player(i + 1, (y, x))  # Player number is an integer, position is tuple of ints
+        grid[y][x].add_value(player.number)  # Store player's number in the cell
+        players_object.add_player(player)
+
+    return players_object
+
+
 #Function used to check if two players are on the same spot, and if so print this and return true.
 def check_collision(players_object):
     player_positions = set()
