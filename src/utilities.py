@@ -20,3 +20,17 @@ def blend_colors(colors):
     g = sum(c[1] for c in colors) // len(colors)
     b = sum(c[2] for c in colors) // len(colors)
     return r, g, b
+
+def limit_input_value(value, input_field, min, max):
+    if not value.strip():  # Check if the input is blank
+        return
+    elif value.isdigit():
+        value = int(value)
+        if value < min:
+            input_field.set_value(str(min))
+        elif value > max:
+            input_field.set_value(str(max))
+        else:
+            input_field.set_value(str(value))
+    else:
+        input_field.set_value(str(min))  # Set value to 0 if the input is not a valid number
