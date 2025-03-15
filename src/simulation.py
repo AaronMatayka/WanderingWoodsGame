@@ -9,22 +9,30 @@ from src.person import Person
 pygame.init()
 
 
-# Settings Menu
-def settings_menu(mainmenu, settings):
-    mainmenu._open(settings)
-
-
 def start_the_game(mainmenu, submenu):
+    """
+    Starts the game based on the grade level.
+    Opens the simulation chooser or the main menu with a parameter submenu.
+
+    Args:
+        mainmenu: The main menu to be displayed.
+        submenu: The submenu for game parameters.
+    """
     if universal_variables.GRADE_LEVEL == 1:
         simulation_chooser(mainmenu)
     elif universal_variables.GRADE_LEVEL == 2 or universal_variables.GRADE_LEVEL == 3:
         mainmenu._open(submenu)
 
 
-def final_menu(mainmenu, finalmenu):
-    mainmenu._open(finalmenu)
-
 def generate_player_position_inputs(submenu, player_count):
+    """
+    Generates input fields for player positions (X, Y) in the game.
+    Clears any existing input fields and creates new ones.
+
+    Args:
+        submenu: The submenu where input fields will be added.
+        player_count: The number of players for whom inputs are generated.
+    """
     # Remove any existing player position input boxes
     for widget in submenu.get_widgets():
         submenu.remove_widget(widget)
@@ -46,7 +54,15 @@ def generate_player_position_inputs(submenu, player_count):
     parent_frame.pack(frame1)
     parent_frame.pack(frame2)
 
+
 def simulation_chooser(finalmenu):
+    """
+    Chooses and initializes the simulation based on the grade level.
+    Creates the player objects and sets their positions accordingly.
+
+    Args:
+        finalmenu: The final menu to open after the simulation setup.
+    """
     from src.game_base import Game
     test = Game(universal_variables.GRID_WIDTH, universal_variables.GRID_HEIGHT, universal_variables.PLAYER_COUNT)
 
@@ -60,7 +76,8 @@ def simulation_chooser(finalmenu):
             color = universal_variables.PLAYER_COLORS[i % len(universal_variables.PLAYER_COLORS)]
 
             test.people.append(Person(i * (universal_variables.GRID_WIDTH // universal_variables.PLAYER_COUNT),
-                                      i * (universal_variables.GRID_HEIGHT // universal_variables.PLAYER_COUNT), color, i + 1))
+                                      i * (universal_variables.GRID_HEIGHT // universal_variables.PLAYER_COUNT), color,
+                                      i + 1))
     else:
         print("Invalid Grade Level: " + str(universal_variables.GRADE_LEVEL))
 
@@ -84,8 +101,17 @@ def simulation_chooser(finalmenu):
 
     test.game_loop()
 
-# Make sure the input only allows numeric input
+
 def filter_input(text):
+    """
+    Filters the input to ensure it only allows numeric values, returning a float.
+
+    Args:
+        text: The input string to be filtered.
+
+    Returns:
+        float: The numeric value of the input, or 1.0 if the input is invalid.
+    """
     if not text:
         return 1.0  # Return 1 if input is empty
     # Check if the text starts with a dot and prepend 0
@@ -97,21 +123,25 @@ def filter_input(text):
     except ValueError:
         return 1.0  # Return 0 if the input is invalid
 
+
 def main_menu():
+    """
+    Initializes and runs the main menu loop, allowing navigation through menus and handling input.
+    """
     screen = pygame.display.set_mode((universal_variables.WINDOW_WIDTH, universal_variables.WINDOW_HEIGHT))
 
     # MAIN MENU
     mainmenu = pygame_menu.Menu('Wandering In The Woods', universal_variables.WINDOW_WIDTH,
                                 universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
     mainmenu.add.button('Run Simulation', lambda: start_the_game(mainmenu, submenu))
-    mainmenu.add.button('Settings', lambda: settings_menu(mainmenu, settings))
+    mainmenu.add.button('Settings', lambda: mainmenu._open(settings))
     mainmenu.add.button('Quit', pygame_menu.events.EXIT)
 
     # SETTINGS MENU
     settings = pygame_menu.Menu('Settings', universal_variables.WINDOW_WIDTH, universal_variables.WINDOW_HEIGHT,
                                 theme=themes.THEME_GREEN)
     grade_selector = settings.add.selector('Grade Level :', [('K-2', 1), ('3-5', 2), ('6-8', 3)],
-                          default=universal_variables.GRADE_LEVEL - 1)
+                                           default=universal_variables.GRADE_LEVEL - 1)
     time_selector = settings.add.text_input('Simulation Turn Time: ', default=str(universal_variables.TURN_TIME))
     cell_size_selector = settings.add.text_input('Cell Size: ', default=str(universal_variables.CELL_SIZE))
 
@@ -127,7 +157,7 @@ def main_menu():
 
     # STATS MENU
     statsmenu = pygame_menu.Menu('Wandering In The Woods', universal_variables.WINDOW_WIDTH,
-                                universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
+                                 universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
     statsmenu.add.label('Current Run: ' + str(universal_variables.CURRENT_RUN))
     statsmenu.add.label('Longest Run Without Meeting: ' + str(universal_variables.LONGEST_RUN_WITHOUT_MEETING))
     statsmenu.add.label('Longest Run: ' + str(universal_variables.LONGEST_RUN))
@@ -142,6 +172,9 @@ def main_menu():
                                  universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
 
     def final_menu_handler():
+        """
+        Handles the final game parameter inputs, sets the game parameters, and opens the final menu.
+        """
         # TODO: CHECK VALUES FOR CORRECTNESS
         universal_variables.GRID_WIDTH = int(grid_width_input.get_value())
         universal_variables.GRID_HEIGHT = int(grid_height_input.get_value())
@@ -154,15 +187,20 @@ def main_menu():
             universal_variables.PLAYER_COUNT = int(player_count_str)
             generate_player_position_inputs(finalmenu, universal_variables.PLAYER_COUNT)
 
-        final_menu(mainmenu, finalmenu)
+        mainmenu._open(finalmenu)
 
         start_game_button = finalmenu.add.button('Start Game', lambda: simulation_chooser(finalmenu))
 
         start_game_button.set_col_row_index(0, universal_variables.PLAYER_COUNT * 2,
                                             universal_variables.PLAYER_COUNT * 2)
 
-
     def return_to_main_menu(menu):
+        """
+        Resets the game and returns to the main menu.
+
+        Args:
+            menu: The main menu to return to.
+        """
         universal_variables.RUN_COMPLETE = False
         menu.enable()
 

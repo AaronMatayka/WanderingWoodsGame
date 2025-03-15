@@ -4,12 +4,37 @@ from src import universal_variables
 
 
 class GroupManager:
+    """
+    A class responsible for managing player groups, including checking for collisions,
+    updating group memberships, and moving groups on the grid.
+    """
+
     @staticmethod
     def check_collision(person1, person2):
+        """
+        Checks if two people are colliding by comparing their positions.
+
+        Args:
+            person1: The first player object.
+            person2: The second player object.
+
+        Returns:
+            bool: True if the players' positions (x, y) are the same, indicating a collision.
+        """
         return (person1.x == person2.x) and (person1.y == person2.y)
 
     @staticmethod
     def update_groups(people):
+        """
+        Updates the groups of players if they collide. Merges groups when two players
+        collide and updates their statistics.
+
+        Args:
+            people: A list of all player objects to check for collisions and group updates.
+
+        Returns:
+            bool: True if any groups were merged; False otherwise.
+        """
         for player1 in people:
             for player2 in people:
                 # If the two players chosen are not the same person, and they are colliding
@@ -18,6 +43,7 @@ class GroupManager:
                     if player1.group != player2.group:
                         merged_group = player1.group + player2.group  # Merge player groups
 
+                        # Update the longest run without meeting based on move counts
                         if player1.move_count < player2.move_count:
                             if player2.move_count > universal_variables.LONGEST_RUN_WITHOUT_MEETING:
                                 universal_variables.LONGEST_RUN_WITHOUT_MEETING = player2.move_count
@@ -25,27 +51,38 @@ class GroupManager:
                             if player1.move_count > universal_variables.LONGEST_RUN_WITHOUT_MEETING:
                                 universal_variables.LONGEST_RUN_WITHOUT_MEETING = player1.move_count
 
-                        player1.move_count = 0
+                        player1.move_count = 0  # Reset move count for both players
                         player2.move_count = 0
 
                         # Make all players part of the new merged group
                         for players in merged_group:
-                            players.group = merged_group  # Update references
+                            players.group = merged_group  # Update references to the new merged group
 
-                        return True
+                        return True  # Return True to indicate that a merge occurred
 
     @staticmethod
     def move_groups(people, grid_width, grid_height):
+        """
+        Moves each group on the grid based on a random direction chosen for the group leader.
+
+        Args:
+            people: A list of all player objects whose groups will be moved.
+            grid_width: The width of the grid.
+            grid_height: The height of the grid.
+        """
         group_leaders = {}
 
+        # Assign a leader to each group
         for person in people:
             if tuple(person.group) not in group_leaders:
                 group_leaders[tuple(person.group)] = person  # Pick a leader for each group
 
+        # Move each group based on its leader's direction
         for group, leader in group_leaders.items():
-            direction = random.choice(['up', 'down', 'left', 'right'])
-            new_x, new_y = leader.x, leader.y
+            direction = random.choice(['up', 'down', 'left', 'right'])  # Random direction
+            new_x, new_y = leader.x, leader.y  # Start with the leader's current position
 
+            # Determine the new position based on the direction
             if direction == 'up' and leader.y > 0:
                 new_y -= 1
             elif direction == 'down' and leader.y < grid_height - 1:
@@ -55,6 +92,7 @@ class GroupManager:
             elif direction == 'right' and leader.x < grid_width - 1:
                 new_x += 1
 
+            # Move all members of the group to the new position
             for member in leader.group:
-                member.x, member.y = new_x, new_y  # Move entire group
-                member.move_count += 1
+                member.x, member.y = new_x, new_y  # Update position of each member in the group
+                member.move_count += 1  # Increment move count for each group member
