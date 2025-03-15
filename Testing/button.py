@@ -1,16 +1,18 @@
 # Button class for main menu
+import pygame
 
-from Testing.universal_variables import *
+from Testing import universal_variables
 
+pygame.init()
 
 class Button:
     def __init__(self, text, x, y, width, height):
         self.text = text
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = BUTTON_BG_COLOR  # Dark Blue
-        self.hover_color = BUTTON_BG_HOVER_COLOR  # Light Blue
-        self.font = BUTTON_FONT
-        self.text_surf = self.font.render(text, True, BUTTON_TEXT_COLOR)
+        self.color = universal_variables.BUTTON_BG_COLOR  # Dark Blue
+        self.hover_color = universal_variables.BUTTON_BG_HOVER_COLOR  # Light Blue
+        self.font = universal_variables.BUTTON_FONT
+        self.text_surf = self.font.render(text, True, universal_variables.BUTTON_TEXT_COLOR)
         self.text_rect = self.text_surf.get_rect(center=self.rect.center)
 
     def draw(self, screen):

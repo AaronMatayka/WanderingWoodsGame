@@ -1,9 +1,8 @@
 # Player class
 import random
+import pygame
 
-import utilities
-from Testing import universal_variables
-from Testing.universal_variables import *
+from Testing import utilities, universal_variables
 
 # Initialize pygame
 pygame.init()
@@ -11,10 +10,10 @@ pygame.init()
 
 class Person:
     def __init__(self, x, y, color):
-        print(x, y, color)
         self.x = x
         self.y = y
         self.color = color
+        self.move_count = 0
         self.group = [self]  # A list to store group members, initially just the person
 
     def move(self, grid_width, grid_height):
@@ -30,6 +29,8 @@ class Person:
             self.x -= 1
         elif direction == 'right' and self.x < grid_width - 1:
             self.x += 1
+
+        self.move_count += 1
 
     def draw(self, screen):
         if len(self.group) > 1:

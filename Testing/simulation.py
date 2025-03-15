@@ -41,13 +41,10 @@ def simulation_chooser():
     test = Game(universal_variables.GRID_WIDTH, universal_variables.GRID_HEIGHT, universal_variables.PLAYER_COUNT)
 
     if universal_variables.GRADE_LEVEL == 1:
-        print("Selected Grade Level: K-2")
-
         test.people.append(Person(0, 0, universal_variables.PLAYER_COLORS[0]))
         test.people.append(Person(universal_variables.GRID_WIDTH - 1, universal_variables.GRID_HEIGHT - 1,
                                   universal_variables.PLAYER_COLORS[1]))
     elif universal_variables.GRADE_LEVEL == 2 or universal_variables.GRADE_LEVEL == 3:
-        print("Selected Grade Level: 3-5")
         for i in range(universal_variables.PLAYER_COUNT):
             # Use modulo to loop through PLAYER_COLORS in case PLAYER_COUNT exceeds the number of colors available
             color = universal_variables.PLAYER_COLORS[i % len(universal_variables.PLAYER_COLORS)]
@@ -59,10 +56,8 @@ def simulation_chooser():
 
     test.game_loop()
 
-
 def grade_level_changed(self, grade_selector):
     universal_variables.GRADE_LEVEL = grade_selector
-
 
 # Make sure the input only allows numeric input
 def filter_input(text):
@@ -76,7 +71,6 @@ def filter_input(text):
         return float(''.join([char for char in text if char.isdigit() or char == '.']))
     except ValueError:
         return 1.0  # Return 0 if the input is invalid
-
 
 def main_menu():
     screen = pygame.display.set_mode((universal_variables.WINDOW_WIDTH, universal_variables.WINDOW_HEIGHT))
@@ -104,6 +98,18 @@ def main_menu():
     player_count_input = submenu.add.text_input('Player Count: ', default='3', maxchar=2)
     submenu.add.button('Continue', lambda: final_menu_handler())
 
+    # STATS MENU
+    statsmenu = pygame_menu.Menu('Wandering In The Woods', universal_variables.WINDOW_WIDTH,
+                                universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
+    statsmenu.add.label('Current Run: ' + str(universal_variables.CURRENT_RUN))
+    statsmenu.add.label('Longest Run Without Meeting: ' + str(universal_variables.LONGEST_RUN_WITHOUT_MEETING))
+    statsmenu.add.label('Longest Run: ' + str(universal_variables.LONGEST_RUN))
+    statsmenu.add.label('Shortest Run: ' + str(universal_variables.SHORTEST_RUN))
+    statsmenu.add.label('Average Run: ' + str(universal_variables.AVERAGE_RUN))
+    statsmenu.add.label('Aggregate Runs: ' + str(universal_variables.AGGREGATE_RUNS))
+    statsmenu.add.button('Return To Main Menu', lambda: return_to_main_menu(mainmenu))
+    statsmenu.add.button('Quit', pygame_menu.events.EXIT)
+
     # FINAL MENU
     finalmenu = pygame_menu.Menu('Final Game Parameters', universal_variables.WINDOW_WIDTH,
                                  universal_variables.WINDOW_HEIGHT, theme=themes.THEME_GREEN)
@@ -128,6 +134,10 @@ def main_menu():
         start_game_button.set_col_row_index(0, universal_variables.PLAYER_COUNT * 2,
                                             universal_variables.PLAYER_COUNT * 2)
 
+    def return_to_main_menu(menu):
+        universal_variables.RUN_COMPLETE = False
+        menu.enable()
+
     while True:
         events = pygame.event.get()
         for event in events:
@@ -136,9 +146,17 @@ def main_menu():
 
             if event.type == pygame.QUIT:
                 exit()
-        if mainmenu.is_enabled():
-            mainmenu.update(events)
-            mainmenu.draw(screen)
+
+        if universal_variables.RUN_COMPLETE:
+            # If a run was completed, show the stats menu
+            statsmenu.update(events)
+            statsmenu.draw(screen)
+        else:
+            # Otherwise, show the main menu
+            if mainmenu.is_enabled():
+                mainmenu.update(events)
+                mainmenu.draw(screen)
+
         pygame.display.update()
 
 

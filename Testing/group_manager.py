@@ -1,5 +1,7 @@
 import random
 
+from Testing import universal_variables
+
 
 class GroupManager:
     @staticmethod
@@ -15,6 +17,16 @@ class GroupManager:
                     # If the two players are not already part of the same group
                     if player1.group != player2.group:
                         merged_group = player1.group + player2.group  # Merge player groups
+
+                        if player1.move_count < player2.move_count:
+                            if player2.move_count > universal_variables.LONGEST_RUN_WITHOUT_MEETING:
+                                universal_variables.LONGEST_RUN_WITHOUT_MEETING = player2.move_count
+                        else:
+                            if player1.move_count > universal_variables.LONGEST_RUN_WITHOUT_MEETING:
+                                universal_variables.LONGEST_RUN_WITHOUT_MEETING = player1.move_count
+
+                        player1.move_count = 0
+                        player2.move_count = 0
 
                         # Make all players part of the new merged group
                         for players in merged_group:
@@ -45,3 +57,4 @@ class GroupManager:
 
             for member in leader.group:
                 member.x, member.y = new_x, new_y  # Move entire group
+                member.move_count += 1

@@ -1,7 +1,7 @@
 import pygame
 
-from Testing import universal_variables, simulation
-from Testing.group_manager import *
+from Testing import simulation, universal_variables
+from Testing.group_manager import GroupManager
 
 pygame.init()
 
@@ -40,8 +40,8 @@ class Game:
         for x in range(self.grid_width):
             for y in range(self.grid_height):
                 pygame.draw.rect(screen, universal_variables.WHITE, (
-                x * universal_variables.CELL_SIZE, y * universal_variables.CELL_SIZE, universal_variables.CELL_SIZE,
-                universal_variables.CELL_SIZE), 1)
+                    x * universal_variables.CELL_SIZE, y * universal_variables.CELL_SIZE, universal_variables.CELL_SIZE,
+                    universal_variables.CELL_SIZE), 1)
 
         # Draw the people
         for person in self.people:
@@ -70,7 +70,7 @@ class Game:
         running = True
         while running:
             game_over = False
-            move_count = 0
+            game_move_count = 0
             last_time = pygame.time.get_ticks()  # Initialize the last_time for tracking elapsed time
 
             while not game_over:
@@ -104,7 +104,7 @@ class Game:
                     if found_group:
                         self.draw_grid(screen)
 
-                    move_count += 1
+                    game_move_count += 1
 
                     if self.all_met():
                         for person in self.people:
@@ -117,24 +117,45 @@ class Game:
 
                 pygame.display.update()
 
-            # Display final message
-            text_surface = universal_variables.font.render(f"All players met ", True, universal_variables.TEXT_COLOR)
-            text_surface_2 = universal_variables.font.render(f"in {move_count} moves!", True,
-                                                             universal_variables.TEXT_COLOR)
-            screen.blit(text_surface, (50, 50))
-            screen.blit(text_surface_2, (50, 100))
-            pygame.display.update()
+            # Game Ended Collect Statistics
+            if universal_variables.SHORTEST_RUN == -1 or game_move_count < universal_variables.SHORTEST_RUN:
+                universal_variables.SHORTEST_RUN = game_move_count
 
-            # Wait for user input to restart or quit
-            waiting = True
-            while waiting:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        return
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_r:
-                            simulation.main_menu()
-                        elif event.key == pygame.K_q:
-                            pygame.quit()
-                            return
+            if universal_variables.LONGEST_RUN == -1 or game_move_count > universal_variables.LONGEST_RUN:
+                universal_variables.LONGEST_RUN = game_move_count
+
+            universal_variables.AGGREGATE_RUNS.append(game_move_count)
+
+            universal_variables.AVERAGE_RUN = 0
+            for run in universal_variables.AGGREGATE_RUNS:
+                universal_variables.AVERAGE_RUN += run
+
+            universal_variables.AVERAGE_RUN = round(universal_variables.AVERAGE_RUN / len(universal_variables.AGGREGATE_RUNS), 2)
+
+            universal_variables.CURRENT_RUN = game_move_count
+
+            # Show Statistics Menu
+            universal_variables.RUN_COMPLETE = True
+            simulation.main_menu()
+
+            # Display final message
+            # text_surface = universal_variables.font.render(f"All players met ", True, universal_variables.TEXT_COLOR)
+            # text_surface_2 = universal_variables.font.render(f"in {game_move_count} moves!", True,
+            #                                                  universal_variables.TEXT_COLOR)
+            # screen.blit(text_surface, (50, 50))
+            # screen.blit(text_surface_2, (50, 100))
+            # pygame.display.update()
+            #
+            # # Wait for user input to restart or quit
+            # waiting = True
+            # while waiting:
+            #     for event in pygame.event.get():
+            #         if event.type == pygame.QUIT:
+            #             pygame.quit()
+            #             return
+            #         if event.type == pygame.KEYDOWN:
+            #             if event.key == pygame.K_r:
+            #                 simulation.main_menu()
+            #             elif event.key == pygame.K_q:
+            #                 pygame.quit()
+            #                 return
