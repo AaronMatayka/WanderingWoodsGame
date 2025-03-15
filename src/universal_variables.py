@@ -24,7 +24,9 @@ CURRENT_RUN = 0  # Current run time
 AGGREGATE_RUNS = []  # List to store all run times
 
 # Grade Level (1 = K-2 | 2 = 3-5 | 3 = 6-8)
-GRADE_LEVEL = 2  # Grade level for which the game is designed
+GRADE_LEVEL = 3  # Grade level for which the game is designed
+
+WANDERING_CHOICE = 'Biased Unexplored'
 
 # Colors
 WHITE = (255, 255, 255)  # RGB color code for white
@@ -35,7 +37,7 @@ TEXT_COLOR = (255, 255, 255)  # Color of the text (white)
 GROUP_MERGED_COLOR = (128, 0, 128)  # Color for merged groups (purple)
 
 # Game settings
-TURN_TIME = 0.7  # Time (in seconds) per turn for each player
+TURN_TIME = 3  # Time (in seconds) per turn for each player
 
 # Button settings
 BUTTON_BG_COLOR = (55, 55, 55)  # Background color of buttons (dark gray)

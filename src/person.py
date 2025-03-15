@@ -42,6 +42,8 @@ class Person:
         self.move_count = 0
         self.player_number = player_number
         self.group = [self]  # A list to store group members, initially just the person
+        self.history = []  # Track past visited locations as a list
+        self.history.append((self.x, self.y))
 
     def move(self, grid_width, grid_height):
         """

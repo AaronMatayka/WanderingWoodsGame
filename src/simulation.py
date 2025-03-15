@@ -150,8 +150,8 @@ def main_menu():
                                theme=themes.THEME_GREEN)
     grid_width_input = submenu.add.text_input('Grid Width: ', default='5', maxchar=2)
     grid_height_input = submenu.add.text_input('Grid Height: ', default='5', maxchar=2)
-    player_count_input = submenu.add.text_input('Player Count: ', default='3', maxchar=2)
-    wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('src', 2)], default=0)
+    player_count_input = submenu.add.text_input('Player Count: ', default='2', maxchar=2)
+    wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('Random Valid', 2), ('Biased Unexplored', 3)], default=0)
     wandering_choice.hide()
     submenu.add.button('Continue', lambda: final_menu_handler())
 
@@ -210,6 +210,7 @@ def main_menu():
             universal_variables.GRADE_LEVEL = grade_selector.get_value()[1] + 1
             universal_variables.TURN_TIME = filter_input(time_selector.get_value())
             universal_variables.CELL_SIZE = filter_input(cell_size_selector.get_value())
+            universal_variables.WANDERING_CHOICE = wandering_choice.get_value()[0][0]
 
             if universal_variables.GRADE_LEVEL == 3:
                 wandering_choice.show()

@@ -1,7 +1,7 @@
 import pygame
+import group_manager
 
 from src import simulation, universal_variables
-from src.group_manager import GroupManager
 
 pygame.init()
 
@@ -98,8 +98,8 @@ class Game:
                     last_time = current_time  # Reset the last_time
                     self.draw_grid(screen)
 
-                    GroupManager.move_groups(self.people, self.grid_width, self.grid_height)
-                    found_group = GroupManager.update_groups(self.people)
+                    group_manager.move_groups(self.people, self.grid_width, self.grid_height)
+                    found_group = group_manager.update_groups(self.people)
 
                     if found_group:
                         self.draw_grid(screen)
@@ -137,25 +137,3 @@ class Game:
             # Show Statistics Menu
             universal_variables.RUN_COMPLETE = True
             simulation.main_menu()
-
-            # Display final message
-            # text_surface = universal_variables.font.render(f"All players met ", True, universal_variables.TEXT_COLOR)
-            # text_surface_2 = universal_variables.font.render(f"in {game_move_count} moves!", True,
-            #                                                  universal_variables.TEXT_COLOR)
-            # screen.blit(text_surface, (50, 50))
-            # screen.blit(text_surface_2, (50, 100))
-            # pygame.display.update()
-            #
-            # # Wait for user input to restart or quit
-            # waiting = True
-            # while waiting:
-            #     for event in pygame.event.get():
-            #         if event.type == pygame.QUIT:
-            #             pygame.quit()
-            #             return
-            #         if event.type == pygame.KEYDOWN:
-            #             if event.key == pygame.K_r:
-            #                 simulation.main_menu()
-            #             elif event.key == pygame.K_q:
-            #                 pygame.quit()
-            #                 return
