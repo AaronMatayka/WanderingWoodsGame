@@ -80,5 +80,5 @@ if __name__ == "__main__":
     main_program = Main()
     main_program.run()
 
-    #BasicSimulation().run_simulation()
-    IntermediateSimulation().run_simulation()
+    BasicSimulation().run_simulation()
+    #IntermediateSimulation().run_simulation()
