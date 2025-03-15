@@ -1,4 +1,4 @@
-from SimulationBase import SimulationBase
+from simulation_base import SimulationBase
 from game_utilities import *
 import time
 import random
