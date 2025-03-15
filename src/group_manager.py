@@ -1,6 +1,6 @@
 import random
 
-from Testing import universal_variables
+from src import universal_variables
 
 
 class GroupManager:

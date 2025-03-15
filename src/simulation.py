@@ -2,8 +2,8 @@ import pygame
 import pygame_menu
 from pygame_menu import themes
 
-from Testing import universal_variables
-from Testing.person import Person
+from src import universal_variables
+from src.person import Person
 
 # Initialize pygame
 pygame.init()
@@ -47,7 +47,7 @@ def generate_player_position_inputs(submenu, player_count):
     parent_frame.pack(frame2)
 
 def simulation_chooser(finalmenu):
-    from Testing.game_base import Game
+    from src.game_base import Game
     test = Game(universal_variables.GRID_WIDTH, universal_variables.GRID_HEIGHT, universal_variables.PLAYER_COUNT)
 
     if universal_variables.GRADE_LEVEL == 1:
@@ -121,7 +121,7 @@ def main_menu():
     grid_width_input = submenu.add.text_input('Grid Width: ', default='5', maxchar=2)
     grid_height_input = submenu.add.text_input('Grid Height: ', default='5', maxchar=2)
     player_count_input = submenu.add.text_input('Player Count: ', default='3', maxchar=2)
-    wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('Testing', 2)], default=0)
+    wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('src', 2)], default=0)
     wandering_choice.hide()
     submenu.add.button('Continue', lambda: final_menu_handler())
 

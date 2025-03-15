@@ -1,7 +1,7 @@
 import pygame
 
-from Testing import simulation, universal_variables
-from Testing.group_manager import GroupManager
+from src import simulation, universal_variables
+from src.group_manager import GroupManager
 
 pygame.init()
 

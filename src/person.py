@@ -2,7 +2,7 @@
 import random
 import pygame
 
-from Testing import utilities, universal_variables
+from src import utilities, universal_variables
 
 # Initialize pygame
 pygame.init()

@@ -1,7 +1,7 @@
 # Button class for main menu
 import pygame
 
-from Testing import universal_variables
+from src import universal_variables
 
 pygame.init()
 
