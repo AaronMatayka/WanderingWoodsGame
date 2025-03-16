@@ -1,3 +1,5 @@
+import os
+import sys
 import time
 import pygame
 
@@ -7,9 +9,20 @@ import universal_variables
 
 pygame.init()
 
-# Try to load the image with transparency
+# Function to get the correct path for bundled files
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller """
+    if getattr(sys, 'frozen', False):  # Check if running as an exe
+        base_path = sys._MEIPASS  # Temporary directory for PyInstaller
+    else:
+        base_path = os.path.abspath(".")  # Normal script execution
+
+    return os.path.join(base_path, relative_path)
+
+# Load the image with transparency using the resource path
 try:
-    happy_image = pygame.image.load('happy.png').convert_alpha()  # Ensure alpha channel is used
+    happy_image_path = resource_path('happy.png')  # Get correct path for bundled image
+    happy_image = pygame.image.load(happy_image_path).convert_alpha()  # Ensure alpha channel is used
     happy_image = pygame.transform.scale(happy_image, (100, 100))  # Resize image if needed
     happy_image.set_alpha(150)  # Set transparency (0 = fully transparent, 255 = fully opaque)
 except pygame.error as e:

@@ -1,3 +1,5 @@
+import os
+import sys
 from functools import partial
 
 import pygame
@@ -14,9 +16,19 @@ pygame.init()
 # Initialize pygame mixer for sound
 pygame.mixer.init()
 
-# Load the background music
-background_music = pygame.mixer.Sound('music.wav')
+# Function to get the correct path for bundled files
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller """
+    if getattr(sys, 'frozen', False):  # Check if running as an exe
+        base_path = sys._MEIPASS  # Temporary directory for PyInstaller
+    else:
+        base_path = os.path.abspath(".")  # Normal script execution
 
+    return os.path.join(base_path, relative_path)
+
+# Load the background music
+background_music_path = resource_path('music.wav')
+background_music = pygame.mixer.Sound(background_music_path)
 
 def start_the_game(mainmenu, submenu):
     """
