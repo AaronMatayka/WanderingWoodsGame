@@ -1,6 +1,6 @@
 import random
+import universal_variables
 
-from src import universal_variables
 
 def check_collision(person1, person2):
     """
@@ -14,6 +14,7 @@ def check_collision(person1, person2):
         bool: True if the players' positions (x, y) are the same, indicating a collision.
     """
     return (person1.x == person2.x) and (person1.y == person2.y)
+
 
 def update_groups(people):
     """
@@ -51,7 +52,16 @@ def update_groups(people):
 
                     return True  # Return True to indicate that a merge occurred
 
+
 def move_groups(people, grid_width, grid_height):
+    """
+    Moves each group of players based on the chosen wandering strategy.
+
+    Args:
+        people: A list of all player objects whose groups will be moved.
+        grid_width: The width of the grid.
+        grid_height: The height of the grid.
+    """
     if universal_variables.WANDERING_CHOICE == 'Random':
         move_groups_random(people, grid_width, grid_height)
     elif universal_variables.WANDERING_CHOICE == 'Random Valid':
@@ -70,7 +80,7 @@ def move_groups_biased(people, grid_width, grid_height, memory_limit=5):
         people: A list of all player objects whose groups will be moved.
         grid_width: The width of the grid.
         grid_height: The height of the grid.
-        memory_limit: The number of past positions to remember.
+        memory_limit: The number of past positions to remember for the leader.
     """
     group_leaders = {}
 
@@ -103,6 +113,7 @@ def move_groups_biased(people, grid_width, grid_height, memory_limit=5):
 
         print("(" + str(leader.x) + ", " + str(leader.y) + "): " + str(unexplored_moves))
 
+        # Choose a direction based on unexplored locations, or move randomly if all are explored
         if unexplored_moves:
             direction, new_x, new_y = random.choice(unexplored_moves)
         else:
@@ -118,8 +129,16 @@ def move_groups_biased(people, grid_width, grid_height, memory_limit=5):
             if len(member.history) > memory_limit:
                 member.history.pop(0)
 
+
 def move_groups_random_valid(people, grid_width, grid_height):
-    # TODO: DOCUMENTATION COMMENTS
+    """
+    Moves each group on the grid based on valid random directions for the group leader.
+
+    Args:
+        people: A list of all player objects whose groups will be moved.
+        grid_width: The width of the grid.
+        grid_height: The height of the grid.
+    """
     group_leaders = {}
 
     # Assign a leader to each group
@@ -158,6 +177,7 @@ def move_groups_random_valid(people, grid_width, grid_height):
         for member in leader.group:
             member.x, member.y = new_x, new_y  # Update position of each member in the group
             member.move_count += 1  # Increment move count for each group member
+
 
 def move_groups_random(people, grid_width, grid_height):
     """
