@@ -111,8 +111,6 @@ def move_groups_biased(people, grid_width, grid_height, memory_limit=5):
             if (x, y) not in leader.history:
                 unexplored_moves.append((direction, x, y))
 
-        print("(" + str(leader.x) + ", " + str(leader.y) + "): " + str(unexplored_moves))
-
         # Choose a direction based on unexplored locations, or move randomly if all are explored
         if unexplored_moves:
             direction, new_x, new_y = random.choice(unexplored_moves)
