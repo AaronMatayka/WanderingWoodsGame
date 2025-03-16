@@ -7,3 +7,13 @@
 *.iml
 out
 gen
+/build/simulation/Analysis-00.toc
+/build/simulation/base_library.zip
+/build/simulation/EXE-00.toc
+/build/simulation/PKG-00.toc
+/build/simulation/PYZ-00.pyz
+/build/simulation/PYZ-00.toc
+/build/simulation/simulation.pkg
+/simulation.spec
+/build/simulation/warn-simulation.txt
+/build/simulation/xref-simulation.html
