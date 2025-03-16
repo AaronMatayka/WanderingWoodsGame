@@ -22,16 +22,20 @@ def blend_colors(colors):
     return r, g, b
 
 def limit_input_value(value, input_field, min, max):
-    if not value.strip():  # Check if the input is blank
-        return
-    elif value.isdigit():
-        value = int(value)
-        print(input_field.get_title())
+    value = int(value)
+    if value < min:
+        input_field.set_value(str(min))
+    elif value > max:
+        input_field.set_value(str(max))
+    else:
+        input_field.set_value(str(value))
+
+def limit_input_value_selected(input_field, menu, min, max):
+    value = int(input_field.get_value())
+    if input_field.get_selected_time() == 0:
         if value < min:
             input_field.set_value(str(min))
         elif value > max:
             input_field.set_value(str(max))
         else:
             input_field.set_value(str(value))
-    else:
-        input_field.set_value(str(min))  # Set value to 0 if the input is not a valid number

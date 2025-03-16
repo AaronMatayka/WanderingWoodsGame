@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import group_manager
 
@@ -5,6 +7,12 @@ from src import simulation, universal_variables
 
 pygame.init()
 
+# Try to load the image
+try:
+    happy_image = pygame.image.load('src/happy.png')
+    happy_image = pygame.transform.scale(happy_image, (100, 100))  # Resize image if needed
+except pygame.error as e:
+    print(f"Unable to load image: {e}")
 
 class Game:
     def __init__(self, grid_width, grid_height, num_people):
@@ -12,17 +20,6 @@ class Game:
         self.grid_height = grid_height
         self.num_people = num_people
         self.people = []
-
-    def get_game_settings(self):
-        return
-        # self.people = []
-
-        # # Randomly Place People Around Grid
-        # for i in range(self.num_people):
-        #     player_x = random.randint(0, self.grid_width - 1)
-        #     player_y = random.randint(0, self.grid_height - 1)
-        #
-        #     self.people.append(Person(player_x, player_y, PLAYER_COLORS[i]))
 
     def all_met(self):
         if not self.people:
@@ -60,8 +57,6 @@ class Game:
         pygame.display.update()
 
     def game_loop(self):
-        self.get_game_settings()
-
         # Set the window to the grid size
         screen = pygame.display.set_mode(
             (self.grid_width * universal_variables.CELL_SIZE, self.grid_height * universal_variables.CELL_SIZE + 50))
@@ -103,6 +98,10 @@ class Game:
 
                     if found_group:
                         self.draw_grid(screen)
+                        screen.blit(happy_image, (self.grid_width * universal_variables.CELL_SIZE // 2 - 50,
+                                                  self.grid_height * universal_variables.CELL_SIZE // 2 - 50))  # Draw the image at position (250, 200)
+                        pygame.display.update()
+                        time.sleep(3)
 
                     game_move_count += 1
 
@@ -113,6 +112,9 @@ class Game:
                             # Show winning scenario
                             self.draw_grid(screen)
 
+                        #screen.blit(happy_image, (self.grid_width * universal_variables.CELL_SIZE // 2 - 50, self.grid_height * universal_variables.CELL_SIZE // 2 - 50))  # Draw the image at position (250, 200)
+                        #pygame.display.update()
+                        #time.sleep(3)
                         game_over = True
 
                 pygame.display.update()

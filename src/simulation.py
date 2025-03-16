@@ -10,6 +10,11 @@ from src.person import Person
 # Initialize pygame
 pygame.init()
 
+# Initialize pygame mixer for sound
+pygame.mixer.init()
+
+# Load the background music
+background_music = pygame.mixer.Sound('src/music.wav')
 
 def start_the_game(mainmenu, submenu):
     """
@@ -47,16 +52,16 @@ def generate_player_position_inputs(submenu, player_count):
 
     # Create new input boxes for each player position
     for i in range(1, player_count + 1):
-        input1 = submenu.add.text_input(f'Player {i} X: ', default='0', maxchar=3)
+        input1 = submenu.add.text_input(f'Player {i} X: ', default='0', maxchar=3, input_type=pygame_menu.locals.INPUT_INT)
         frame1.pack(input1)
-        input2 = submenu.add.text_input(f'Player {i} Y: ', default='0', maxchar=3)
+        input2 = submenu.add.text_input(f'Player {i} Y: ', default='0', maxchar=3, input_type=pygame_menu.locals.INPUT_INT)
         frame2.pack(input2)
 
         # Apply the limit function to both input fields with partial function
-        input1.set_onchange(
-            partial(utilities.limit_input_value, input_field=input1, min=0, max=universal_variables.GRID_WIDTH - 1))
-        input2.set_onchange(
-            partial(utilities.limit_input_value, input_field=input2, min=0, max=universal_variables.GRID_HEIGHT - 1))
+        input1.add_draw_callback(
+            partial(utilities.limit_input_value_selected, min=0, max=universal_variables.GRID_WIDTH - 1))
+        input2.add_draw_callback(
+            partial(utilities.limit_input_value_selected, min=0, max=universal_variables.GRID_HEIGHT - 1))
 
     parent_frame.pack(frame1)
     parent_frame.pack(frame2)
@@ -93,12 +98,8 @@ def simulation_chooser(finalmenu):
             value = widget.get_value()
             x, y = -1, -1
             if 'X' in widget.get_title():
-                if not value.strip():  # Check if the input is blank
-                    value = '0'
                 x = int(value)
             elif 'Y' in widget.get_title():
-                if not value.strip():  # Check if the input is blank
-                    value = '0'
                 y = int(value)
 
             player_number = ''.join(c for c in widget.get_title() if c.isdigit())
@@ -134,7 +135,6 @@ def filter_input(text):
     except ValueError:
         return 1.0  # Return 0 if the input is invalid
 
-
 def main_menu():
     """
     Initializes and runs the main menu loop, allowing navigation through menus and handling input.
@@ -153,30 +153,18 @@ def main_menu():
                                 theme=themes.THEME_GREEN)
     grade_selector = settings.add.selector('Grade Level :', [('K-2', 1), ('3-5', 2), ('6-8', 3)],
                                            default=universal_variables.GRADE_LEVEL - 1)
-    time_selector = settings.add.text_input('Simulation Turn Time: ', default=str(universal_variables.TURN_TIME))
-    cell_size_selector = settings.add.text_input('Cell Size: ', default=str(universal_variables.CELL_SIZE))
-
-    time_selector.set_onchange(
-        partial(utilities.limit_input_value, input_field=time_selector, min=0, max=10))
-    cell_size_selector.set_onchange(
-        partial(utilities.limit_input_value, input_field=cell_size_selector, min=10, max=100))
+    time_selector = settings.add.text_input('Simulation Turn Time: ', default=str(universal_variables.TURN_TIME), input_type=pygame_menu.locals.INPUT_FLOAT)
+    cell_size_selector = settings.add.text_input('Cell Size: ', default=str(universal_variables.CELL_SIZE), input_type=pygame_menu.locals.INPUT_INT)
 
     # PARAMETER MENU
     submenu = pygame_menu.Menu('Game Parameters', universal_variables.WINDOW_WIDTH, universal_variables.WINDOW_HEIGHT,
                                theme=themes.THEME_GREEN)
-    grid_width_input = submenu.add.text_input('Grid Width: ', default='5', maxchar=2)
-    grid_height_input = submenu.add.text_input('Grid Height: ', default='5', maxchar=2)
-    player_count_input = submenu.add.text_input('Player Count: ', default='2', maxchar=2)
+    grid_width_input = submenu.add.text_input('Grid Width: ', default='5', maxchar=2, input_type=pygame_menu.locals.INPUT_INT)
+    grid_height_input = submenu.add.text_input('Grid Height: ', default='5', maxchar=2, input_type=pygame_menu.locals.INPUT_INT)
+    player_count_input = submenu.add.text_input('Player Count: ', default='2', maxchar=2, input_type=pygame_menu.locals.INPUT_INT)
     wandering_choice = submenu.add.selector('Wandering Choice: ', [('Random', 1), ('Random Valid', 2), ('Biased Unexplored', 3)], default=0)
     wandering_choice.hide()
     submenu.add.button('Continue', lambda: final_menu_handler())
-
-    grid_width_input.set_onchange(
-        partial(utilities.limit_input_value, input_field=grid_width_input, min=2, max=25))
-    grid_height_input.set_onchange(
-        partial(utilities.limit_input_value, input_field=grid_height_input, min=2, max=25))
-    player_count_input.set_onchange(
-        partial(utilities.limit_input_value, input_field=player_count_input, min=2, max=16))
 
     # STATS MENU
     statsmenu = pygame_menu.Menu('Wandering In The Woods', universal_variables.WINDOW_WIDTH,
@@ -198,24 +186,11 @@ def main_menu():
         """
         Handles the final game parameter inputs, sets the game parameters, and opens the final menu.
         """
-        if not grid_width_input.get_value().strip():  # Check if the input is blank
-            grid_width_input.set_value('2')
-        if not grid_height_input.get_value().strip():  # Check if the input is blank
-            grid_height_input.set_value('2')
-
         universal_variables.GRID_WIDTH = int(grid_width_input.get_value())
         universal_variables.GRID_HEIGHT = int(grid_height_input.get_value())
+        universal_variables.PLAYER_COUNT = int(player_count_input.get_value())
 
-        # Get the value from the input field
-        if not player_count_input.get_value().strip():  # Check if the input is blank
-            player_count_input.set_value('2')
-
-        player_count_str = player_count_input.get_value()
-
-        # Check if the input is a valid number
-        if player_count_str.isdigit():
-            universal_variables.PLAYER_COUNT = int(player_count_str)
-            generate_player_position_inputs(finalmenu, universal_variables.PLAYER_COUNT)
+        generate_player_position_inputs(finalmenu, universal_variables.PLAYER_COUNT)
 
         mainmenu._open(finalmenu)
 
@@ -236,16 +211,22 @@ def main_menu():
 
     while True:
         events = pygame.event.get()
+
+        if time_selector.get_selected_time() == 0:
+            utilities.limit_input_value(time_selector.get_value(), time_selector, 0, 10)
+        if cell_size_selector.get_selected_time() == 0:
+            utilities.limit_input_value(cell_size_selector.get_value(), cell_size_selector, 10, 100)
+        if grid_width_input.get_selected_time() == 0:
+            utilities.limit_input_value(grid_width_input.get_value(), grid_width_input, 2, 25)
+        if grid_height_input.get_selected_time() == 0:
+            utilities.limit_input_value(grid_height_input.get_value(), grid_height_input, 2, 25)
+        if player_count_input.get_selected_time() == 0:
+            utilities.limit_input_value(player_count_input.get_value(), player_count_input, 2, 16)
+
         for event in events:
             universal_variables.GRADE_LEVEL = grade_selector.get_value()[1] + 1
-
-            if not time_selector.get_value().strip():  # Check if the input is blank
-                time_selector.set_value('1')
-            universal_variables.TURN_TIME = filter_input(time_selector.get_value())
-
-            if not cell_size_selector.get_value().strip():  # Check if the input is blank
-                cell_size_selector.set_value('50')
-            universal_variables.CELL_SIZE = filter_input(cell_size_selector.get_value())
+            universal_variables.TURN_TIME = time_selector.get_value()
+            universal_variables.CELL_SIZE = cell_size_selector.get_value()
             universal_variables.WANDERING_CHOICE = wandering_choice.get_value()[0][0]
 
             if universal_variables.GRADE_LEVEL == 3:
@@ -271,4 +252,5 @@ def main_menu():
 
 # Run the main menu
 if __name__ == "__main__":
+    background_music.play(-1)  # -1 means loop the music indefinitely
     main_menu()
