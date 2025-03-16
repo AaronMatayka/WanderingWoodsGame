@@ -23,7 +23,7 @@ Built using **Pygame** for an engaging graphical experience.
 ## 📦 Installation
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.0+
 - Pygame
 - Pygame_menu
 
