@@ -314,6 +314,9 @@ def main_menu():
                 wandering_choice.hide()  # Hide wandering choice for other grades
 
             if event.type == pygame.QUIT:  # Check if the user has closed the window
+                pygame.display.quit()
+                pygame.quit()
+                sys.exit()
                 exit()  # Exit the game if the window is closed
 
         # Update the menu based on the current state
@@ -322,8 +325,11 @@ def main_menu():
             statsmenu.draw(screen)  # Draw the stats menu on the screen
         else:  # Otherwise, show the main menu
             if mainmenu.is_enabled():
-                mainmenu.update(events)  # Update the main menu with current events
-                mainmenu.draw(screen)  # Draw the main menu on the screen
+                try:
+                    mainmenu.update(events)  # Update the main menu with current events
+                    mainmenu.draw(screen)  # Draw the main menu on the screen
+                except pygame.error as e:
+                    pass
 
         pygame.display.update()  # Update the display to show any changes made in the loop
 
@@ -331,4 +337,7 @@ def main_menu():
 # Run the main menu
 if __name__ == "__main__":
     background_music.play(-1)  # -1 means loop the music indefinitely
-    main_menu()
+    try:
+        main_menu()
+    except pygame.error as e:
+        pass
